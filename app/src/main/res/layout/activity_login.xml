@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:textColor="@color/primaryColor"
+        android:textColorHint="@color/primaryColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Identifiant"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mot de Passe"
+        android:textColor="@color/primaryColor"
+        android:textColorHint="@color/primaryColor"
+        android:inputType="textPassword"
+        android:layout_below="@id/etUsername"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:background="@drawable/border_button"
+        android:textColor="@color/primaryColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connexion"
+        android:layout_below="@id/etPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/tvRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pas de compte ? S'inscrire"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center_horizontal"/>
+
+
+</LinearLayout>

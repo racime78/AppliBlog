@@ -1,0 +1,9 @@
+<!-- border_button.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+    <stroke
+        android:width="2dp"
+    android:color="@color/primaryColor" /> <!-- Couleur de la bordure -->
+    <corners android:radius="8dp" /> <!-- Rayon des coins arrondis -->
+</shape>

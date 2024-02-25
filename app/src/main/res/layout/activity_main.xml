@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:layout_marginBottom="50dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingBottom="100dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:src="@drawable/banniere"
+                android:scaleType="fitXY"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Présentation"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/primaryColor"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bienvenue sur l'application mobile créée par Racime Houhou, actuellement en licence générale en informatique.\n\n Ce projet, intitulé Projet Applications Mobiles-NFA024, est conçu pour vous offrir un accès facile et intuitif à une variété d'articles de blog."
+                android:textColor="@color/primaryColor"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Derniers Articles"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/primaryColor"
+                android:layout_marginTop="8dp"/>
+
+            <LinearLayout
+                android:id="@+id/llArticle1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:padding="8dp"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ivArticle1"
+                    android:layout_gravity="center"
+                    android:layout_width="250dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/testlog1"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/tvArticle1Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Compétences requises pour être testeur logiciel"
+                    android:textColor="@color/primaryColor"
+                    android:gravity="center"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llArticle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:padding="8dp"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ivArticle2"
+                    android:layout_width="250dp"
+                    android:layout_gravity="center"
+                    android:layout_height="150dp"
+                    android:src="@drawable/androidmalware"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/tvArticle2Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ce célèbre malware Android est devenu encore plus dangereux, soyez prudents !"
+                    android:textColor="@color/primaryColor"
+                    android:gravity="center"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/bottom_nav_menu" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
