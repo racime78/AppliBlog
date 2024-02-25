@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/editTextArticleTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Titre"
+        android:textColorHint="@color/black"
+        android:backgroundTint="@color/gris"
+        android:textColor="@color/black"
+        android:minHeight="48dp" />
+<EditText
+android:id="@+id/editTextArticleImageUrl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="URL de l'image"
+    android:textColorHint="@color/black"
+    android:backgroundTint="@color/gris"
+    android:textColor="@color/black"
+    android:minHeight="48dp" />
+<EditText
+android:id="@+id/editTextArticleContent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/black"
+    android:backgroundTint="@color/gris"
+    android:textColorHint="@color/black"
+    android:hint="Contenu"
+    android:minHeight="48dp" />
+<Button
+android:id="@+id/buttonSubmitArticle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Ajouter un article"
+    android:textColor="@color/black"
+    android:layout_marginTop="24dp" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

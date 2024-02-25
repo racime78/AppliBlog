@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nom d'utilisateur actuel: "
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:backgroundTint="@color/gris"
             android:layout_marginBottom="8dp" />
 
         <TextView
@@ -22,6 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="E-mail actuel: "
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:backgroundTint="@color/gris"
             android:layout_marginBottom="24dp" />
 
         <EditText
@@ -29,6 +36,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nouveau nom d'utilisateur"
+            android:textColorHint="@color/black"
+            android:backgroundTint="@color/gris"
+            android:textColor="@color/black"
             android:inputType="textPersonName"
             android:minHeight="48dp" />
 
@@ -37,6 +47,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nouveau mot de passe"
+            android:textColorHint="@color/black"
+            android:backgroundTint="@color/gris"
+            android:textColor="@color/black"
             android:inputType="textPassword"
             android:minHeight="48dp" />
 

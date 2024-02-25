@@ -30,6 +30,17 @@
             android:name=".AccountActivity">
         </activity>
 
+        <activity
+            android:name=".Article">
+        </activity>
+
+        <activity
+            android:name=".ArticleAdapter">
+        </activity>
+
+        <activity android:name=".AddArticleActivity"></activity>
+
+        <activity android:name=".ArticleDetailActivity" />
 
         <activity
             android:name=".MainActivity"
@@ -37,14 +48,6 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".Article1"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".Article2"
             android:exported="true">
         </activity>
         <activity android:name=".LoginActivity"

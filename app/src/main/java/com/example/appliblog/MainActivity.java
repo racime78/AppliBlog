@@ -1,33 +1,29 @@
 package com.example.appliblog;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import android.Manifest;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.messaging.FirebaseMessaging;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView ivArticle1;
-    TextView tvArticle1Title;
-    ImageView ivArticle2;
-    TextView tvArticle2Title;
+    private RecyclerView articlesRecyclerView;
+    private ArticleAdapter articleAdapter;
+    private List<Article> articlesList = new ArrayList<>();
     private static final String TAG = "MainActivity";
 
     @Override
@@ -35,84 +31,90 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ivArticle1 = findViewById(R.id.ivArticle1);
-        tvArticle1Title = findViewById(R.id.tvArticle1Title);
-        ivArticle2 = findViewById(R.id.ivArticle2);
-        tvArticle2Title = findViewById(R.id.tvArticle2Title);
+        articlesRecyclerView = findViewById(R.id.articlesRecyclerView);
+        articlesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ivArticle1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Article1.class);
-                startActivity(intent);
-            }
-        });
+        // Initialisez l'adapter avec une liste vide dès le départ
+        articleAdapter = new ArticleAdapter(this, articlesList);
+        articlesRecyclerView.setAdapter(articleAdapter);
 
-        ivArticle2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Article2.class);
-                startActivity(intent);
-            }
-        });
+        // Chargez les articles de la base de données
+        loadArticlesFromDatabase();
 
+        // Initialisation et configuration de Firebase Messaging pour les notifications
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "La récupération du token d'inscription FCM a échoué", task.getException());
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                             return;
                         }
 
+                        // Récupérer le token d'inscription FCM et le loguer
                         String token = task.getResult();
-                        Log.d(TAG, "Token FCM : " + token);
-                        Toast.makeText(MainActivity.this, "Token FCM : " + token, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "FCM Registration Token: " + token);
+                        Toast.makeText(MainActivity.this, "FCM Token: " + token, Toast.LENGTH_SHORT).show();
                     }
                 });
 
-        demanderPermissionNotification();
-
+        // Configuration de la BottomNavigationView
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Intent homeIntent = new Intent(MainActivity.this, MainActivity.class);
-                    startActivity(homeIntent);
+                    // Intent pour revenir à l'accueil, si nécessaire
                     return true;
                 case R.id.navigation_specific:
+                    // Intent pour aller à l'activité du compte utilisateur
                     Intent accountIntent = new Intent(MainActivity.this, AccountActivity.class);
                     startActivity(accountIntent);
                     return true;
             }
             return false;
         });
-    }
 
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // Permission accordée
-                } else {
-                    Toast.makeText(MainActivity.this, "Permission de notification refusée", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-    private void demanderPermissionNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                // Permission déjà accordée
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // Expliquer la nécessité de la permission ici
-            } else {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        FloatingActionButton fab = findViewById(R.id.fab_add_article);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Création de l'intent pour démarrer AddArticleActivity
+                Intent intent = new Intent(MainActivity.this, AddArticleActivity.class);
+                startActivity(intent);
             }
-        }
+        });
     }
+
+    private void loadArticlesFromDatabase() {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        Cursor cursor = dbHelper.getAllArticles();
+        List<Article> newArticlesList = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_ARTICLE_ID));
+                String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE));
+                String imageUrl = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URL));
+                String content = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTENT));
+
+                Article article = new Article(id, title, imageUrl, content);
+                newArticlesList.add(article);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // Mettez à jour la liste dans l'adapter avec les nouveaux articles
+        articlesList.clear();
+        articlesList.addAll(newArticlesList);
+
+        // Notifiez l'adapter que les données ont changé pour rafraîchir l'affichage
+        articleAdapter.notifyDataSetChanged();
+    }
+
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.bottom_nav_menu, menu);
-        return true;
-    }
-}
+    protected void onResume() {
+        super.onResume();
+        // Cela garantit que la liste des articles est rechargée chaque fois que MainActivity revient au premier plan.
+        loadArticlesFromDatabase();
+    }}

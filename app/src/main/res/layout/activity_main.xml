@@ -53,65 +53,22 @@
                 android:textColor="@color/primaryColor"
                 android:layout_marginTop="8dp"/>
 
-            <LinearLayout
-                android:id="@+id/llArticle1"
+            <!-- RecyclerView pour afficher les articles -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/articlesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground"
-                android:padding="8dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"/>
 
-                <ImageView
-                    android:id="@+id/ivArticle1"
-                    android:layout_gravity="center"
-                    android:layout_width="250dp"
-                    android:layout_height="150dp"
-                    android:src="@drawable/testlog1"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/tvArticle1Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Compétences requises pour être testeur logiciel"
-                    android:textColor="@color/primaryColor"
-                    android:gravity="center"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llArticle2"
-                android:layout_width="match_parent"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_add_article"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground"
-                android:padding="8dp"
-                android:layout_marginTop="8dp">
-
-                <ImageView
-                    android:id="@+id/ivArticle2"
-                    android:layout_width="250dp"
-                    android:layout_gravity="center"
-                    android:layout_height="150dp"
-                    android:src="@drawable/androidmalware"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/tvArticle2Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Ce célèbre malware Android est devenu encore plus dangereux, soyez prudents !"
-                    android:textColor="@color/primaryColor"
-                    android:gravity="center"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:src="@android:drawable/ic_input_add" />
         </LinearLayout>
+
     </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -120,5 +77,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_menu" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
