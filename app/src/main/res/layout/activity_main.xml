@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -34,14 +35,14 @@
                 android:text="Présentation"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/primaryColor"
+                android:textColor="@color/purple_500"
                 android:layout_marginTop="8dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bienvenue sur l'application mobile créée par Racime Houhou, actuellement en licence générale en informatique.\n\n Ce projet, intitulé Projet Applications Mobiles-NFA024, est conçu pour vous offrir un accès facile et intuitif à une variété d'articles de blog."
-                android:textColor="@color/primaryColor"
+                android:textColor="@color/purple_500"
                 android:layout_marginTop="4dp"/>
 
             <TextView
@@ -50,7 +51,7 @@
                 android:text="Derniers Articles"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/primaryColor"
+                android:textColor="@color/purple_500"
                 android:layout_marginTop="8dp"/>
 
             <!-- RecyclerView pour afficher les articles -->
@@ -66,7 +67,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="16dp"
-                android:src="@android:drawable/ic_input_add" />
+                android:src="@drawable/blogger"
+                app:backgroundTint="@color/purple_500" />
         </LinearLayout>
 
     </ScrollView>

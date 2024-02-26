@@ -3,12 +3,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:padding="16dp">
 
     <EditText
         android:id="@+id/etUsername"
-        android:textColor="@color/primaryColor"
-        android:textColorHint="@color/primaryColor"
+        android:textColor="@color/purple_500"
+        android:textColorHint="@color/purple_500"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Identifiant"
@@ -19,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Mot de Passe"
-        android:textColor="@color/primaryColor"
-        android:textColorHint="@color/primaryColor"
+        android:textColor="@color/purple_500"
+        android:textColorHint="@color/purple_500"
         android:inputType="textPassword"
         android:layout_below="@id/etUsername"
         android:layout_marginTop="16dp" />
@@ -28,7 +29,7 @@
     <Button
         android:id="@+id/btnLogin"
         android:background="@drawable/border_button"
-        android:textColor="@color/primaryColor"
+        android:textColor="@color/purple_500"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connexion"
@@ -41,6 +42,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pas de compte ? S'inscrire"
+        android:textColor="@color/purple_500"
+
         android:layout_marginTop="15dp"
         android:layout_gravity="center_horizontal"/>
 
