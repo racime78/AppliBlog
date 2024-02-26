@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.navigation_specific) {
                 startActivity(new Intent(MainActivity.this, AccountActivity.class));
             }
-            // Ajoutez d'autres cases pour d'autres éléments si nécessaire
             return true;
         });
     }

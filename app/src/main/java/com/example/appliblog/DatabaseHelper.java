@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Gère la base de données de l'application, y compris la création, la mise à jour,
- * et les opérations CRUD sur les tables des utilisateurs et des articles.
+ * et les opérations sur les tables des utilisateurs et des articles.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Informations de la base de données
