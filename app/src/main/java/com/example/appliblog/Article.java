@@ -1,12 +1,22 @@
 package com.example.appliblog;
 
+/**
+ * Modèle de données pour un article.
+ * Représente un article avec un identifiant unique, un titre, une URL d'image, et du contenu.
+ */
 public class Article {
-    private int id; // Identifiant unique pour chaque article, utile si vous stockez les articles dans une base de données
+    private int id; // Identifiant unique pour chaque article, utile pour le stockage en base de données
     private String title; // Titre de l'article
     private String imageUrl; // URL de l'image associée à l'article
-    private String content; // Contenu de l'article
+    private String content; // Contenu textuel de l'article
 
-    // Constructeur avec tous les paramètres
+    /**
+     * Constructeur pour initialiser une instance d'Article avec tous les attributs nécessaires.
+     * @param id Identifiant unique de l'article.
+     * @param title Titre de l'article.
+     * @param imageUrl URL de l'image associée à l'article.
+     * @param content Contenu de l'article.
+     */
     public Article(int id, String title, String imageUrl, String content) {
         this.id = id;
         this.title = title;
@@ -14,7 +24,8 @@ public class Article {
         this.content = content;
     }
 
-    // Getters et Setters
+    // Getters et Setters pour accéder et modifier les propriétés de l'article
+
     public int getId() {
         return id;
     }
@@ -47,7 +58,11 @@ public class Article {
         this.content = content;
     }
 
-    // Méthode toString() pour afficher les informations de l'article sous forme de chaîne de caractères, utile pour le débogage
+    /**
+     * Méthode toString pour afficher les informations de l'article de manière lisible,
+     * utile pour le débogage et le log.
+     * @return une chaîne de caractères représentant l'article.
+     */
     @Override
     public String toString() {
         return "Article{" +
@@ -58,4 +73,3 @@ public class Article {
                 '}';
     }
 }
-

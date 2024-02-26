@@ -10,19 +10,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
+/**
+ * Adapter pour afficher une liste d'articles dans un RecyclerView.
+ */
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
-    private Context context;
-    private List<Article> articles;
+    private Context context; // Contexte pour accéder aux ressources et démarrer une nouvelle activité
+    private List<Article> articles; // Liste des articles à afficher
 
+    // Constructeur de l'adapter
     public ArticleAdapter(Context context, List<Article> articles) {
         this.context = context;
         this.articles = articles;
     }
 
+    // Crée de nouveaux ViewHolder pour les éléments
     @NonNull
     @Override
     public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -30,55 +34,50 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         return new ArticleViewHolder(view);
     }
 
+    // Remplit le contenu d'un ViewHolder avec les données d'un article à une position donnée
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
         Article article = articles.get(position);
         holder.titleTextView.setText(article.getTitle());
-        holder.contentTextView.setText(article.getContent());
 
-        // Assurez-vous d'utiliser holder.imageView ici
+        // Chargement de l'image avec Glide
         Glide.with(holder.itemView.getContext())
-                .load(article.getImageUrl()) // URL de votre image
-                .error(R.drawable.image_error) // Image d'erreur à utiliser si le chargement échoue
-                .into(holder.imageView); // Utilisez holder.imageView
+                .load(article.getImageUrl())
+                .error(R.drawable.image_error) // Image par défaut en cas d'erreur
+                .into(holder.imageView);
 
-        // Ajouter un gestionnaire de clics
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ArticleDetailActivity.class);
-                intent.putExtra("articleId", article.getId());
-                intent.putExtra("articleTitle", article.getTitle());
-                intent.putExtra("articleImageUrl", article.getImageUrl());
-                intent.putExtra("articleContent", article.getContent());
-                context.startActivity(intent);
-            }
+        // Gestion du clic sur un élément pour ouvrir les détails de l'article
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ArticleDetailActivity.class);
+            intent.putExtra("articleId", article.getId());
+            intent.putExtra("articleTitle", article.getTitle());
+            intent.putExtra("articleImageUrl", article.getImageUrl());
+            intent.putExtra("articleContent", article.getContent());
+            context.startActivity(intent);
         });
     }
 
-
-
+    // Retourne le nombre total d'articles dans la liste
     @Override
     public int getItemCount() {
         return articles.size();
     }
 
-    // Ajoutez cette méthode pour mettre à jour la liste des articles dans l'adapter
+    // Met à jour la liste des articles et notifie l'adapter d'un jeu de données changé
     public void setArticles(List<Article> articles) {
         this.articles = articles;
         notifyDataSetChanged();
     }
 
+    // ViewHolder interne pour contenir les vues d'un seul élément de la liste
     public static class ArticleViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         ImageView imageView;
-        TextView contentTextView;
 
         public ArticleViewHolder(View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.articleTitleTextView);
             imageView = itemView.findViewById(R.id.articleImageView);
-            contentTextView = itemView.findViewById(R.id.articleContentTextView);
         }
     }
 }

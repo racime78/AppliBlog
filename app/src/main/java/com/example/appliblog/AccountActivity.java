@@ -18,13 +18,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * Activité permettant à l'utilisateur de gérer son compte, notamment
+ * de modifier son nom d'utilisateur et son mot de passe.
+ */
 public class AccountActivity extends AppCompatActivity {
 
-    private DatabaseHelper dbHelper;
-    private EditText etNewUsername;
-    private EditText etNewPassword;
-    private Button btnSaveChanges;
+    private DatabaseHelper dbHelper; // Helper pour interagir avec la base de données SQLite
+    private EditText etNewUsername; // Champ de texte pour le nouveau nom d'utilisateur
+    private EditText etNewPassword; // Champ de texte pour le nouveau mot de passe
+    private Button btnSaveChanges; // Bouton pour enregistrer les modifications
 
+    /**
+     * Enregistre le nom d'utilisateur actuel dans les préférences partagées.
+     * @param username Le nom d'utilisateur à enregistrer.
+     */
     private void saveCurrentUser(String username) {
         SharedPreferences sharedPreferences = getSharedPreferences("userSession", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -32,113 +40,125 @@ public class AccountActivity extends AppCompatActivity {
         editor.apply();
     }
 
-
+    /**
+     * Récupère le nom d'utilisateur actuel depuis les préférences partagées.
+     * @return Le nom d'utilisateur actuel, ou `null` si non trouvé.
+     */
     public String getCurrentUsername() {
         SharedPreferences sharedPreferences = getSharedPreferences("userSession", MODE_PRIVATE);
-        return sharedPreferences.getString("username", null); // Retourne `null` si "username" n'existe pas
+        return sharedPreferences.getString("username", null);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
+        // Initialisation du helper de la base de données et des composants de l'interface utilisateur
         dbHelper = new DatabaseHelper(this);
-
-        // Initialisation des EditTexts et du Button pour les mises à jour
         etNewUsername = findViewById(R.id.etNewUsername);
         etNewPassword = findViewById(R.id.etNewPassword);
         btnSaveChanges = findViewById(R.id.btnSaveChanges);
 
-        // Initialisation des TextViews pour afficher les infos actuelles
+        // Affichage des informations actuelles de l'utilisateur
         TextView tvCurrentUsername = findViewById(R.id.tvCurrentUsername);
         TextView tvCurrentEmail = findViewById(R.id.tvCurrentEmail);
+        displayCurrentUserInfo(tvCurrentUsername, tvCurrentEmail);
 
-        // Récupérer le nom d'utilisateur actuel et l'afficher
+        // Configuration du listener du bouton pour sauvegarder les changements
+        setupSaveChangesButton();
+
+        // Configuration de la navigation inférieure
+        setupBottomNavigationView();
+    }
+
+    /**
+     * Affiche les informations actuelles de l'utilisateur dans l'interface.
+     */
+    private void displayCurrentUserInfo(TextView tvCurrentUsername, TextView tvCurrentEmail) {
         String currentUsername = getCurrentUsername();
         if (currentUsername != null) {
             tvCurrentUsername.setText(String.format("Nom d'utilisateur actuel: %s", currentUsername));
-
-            // Récupérer les détails de l'utilisateur depuis la base de données pour obtenir l'email
             Cursor cursor = dbHelper.getUserDetails(currentUsername);
             if (cursor != null && cursor.moveToFirst()) {
-                // Supposons que la colonne d'email est la deuxième colonne de votre curseur
-                String email = cursor.getString(cursor.getColumnIndex("email")); // Assurez-vous que "email" correspond au nom de votre colonne
+                String email = cursor.getString(cursor.getColumnIndex("email"));
                 tvCurrentEmail.setText(String.format("E-mail actuel: %s", email));
                 cursor.close();
             }
         }
-
-        btnSaveChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(AccountActivity.this)
-                        .setTitle("Confirmer la mise à jour") // Titre du pop-up
-                        .setMessage("Êtes-vous sûr de vouloir modifier vos informations ?") // Message affiché dans le pop-up
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // L'utilisateur confirme vouloir faire la mise à jour
-                                String newUsername = etNewUsername.getText().toString();
-                                String newPassword = etNewPassword.getText().toString();
-
-                                if(updateUserInDatabase(newUsername, newPassword)) {
-                                    Toast.makeText(AccountActivity.this, "Informations mises à jour avec succès!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(AccountActivity.this, "Échec de la mise à jour des informations.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null) // Si l'utilisateur sélectionne "Non", rien ne se passe
-                        .setIcon(android.R.drawable.ic_dialog_alert) // Icône d'alerte
-                        .show();
-            }
-        });
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    Intent homeIntent = new Intent(AccountActivity.this, MainActivity.class);
-                    startActivity(homeIntent);
-                    return true;
-                case R.id.navigation_specific:
-                    Intent accountIntent = new Intent(AccountActivity.this, AccountActivity.class);
-                    startActivity(accountIntent);
-                    return true;
-            }
-            return false;
-        });
-
     }
 
+    /**
+     * Configure le bouton pour enregistrer les modifications apportées par l'utilisateur.
+     */
+    private void setupSaveChangesButton() {
+        btnSaveChanges.setOnClickListener(v -> new AlertDialog.Builder(AccountActivity.this)
+                .setTitle("Confirmer la mise à jour")
+                .setMessage("Êtes-vous sûr de vouloir modifier vos informations ?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> saveChanges())
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show());
+    }
 
+    /**
+     * Sauvegarde les changements dans la base de données après confirmation de l'utilisateur.
+     */
+    private void saveChanges() {
+        String newUsername = etNewUsername.getText().toString();
+        String newPassword = etNewPassword.getText().toString();
 
+        if (updateUserInDatabase(newUsername, newPassword)) {
+            Toast.makeText(AccountActivity.this, "Informations mises à jour avec succès!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(AccountActivity.this, "Échec de la mise à jour des informations.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Met à jour les informations de l'utilisateur dans la base de données.
+     * @param newUsername Le nouveau nom d'utilisateur.
+     * @param newPassword Le nouveau mot de passe.
+     * @return `true` si la mise à jour a réussi, sinon `false`.
+     */
     private boolean updateUserInDatabase(String newUsername, String newPassword) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("username", newUsername);
         values.put("password", newPassword);
 
-        String currentUsername = getCurrentUsername(); // Utilise la nouvelle méthode implémentée
+        String currentUsername = getCurrentUsername();
 
         if (currentUsername == null) {
             Toast.makeText(this, "Erreur : Utilisateur non identifié.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        String selection = "username = ?";
-        String[] selectionArgs = { currentUsername };
-
-        int count = db.update("users", values, selection, selectionArgs);
+        int count = db.update("users", values, "username = ?", new String[]{currentUsername});
 
         if (count > 0) {
-            // Mise à jour réussie, enregistrez le nouveau nom d'utilisateur comme actuel
             saveCurrentUser(newUsername);
         }
 
         return count > 0;
     }
 
-
+    /**
+     * Configure la navigation inférieure.
+     */
+    private void setupBottomNavigationView() {
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    startActivity(new Intent(AccountActivity.this, MainActivity.class));
+                    return true;
+                case R.id.navigation_specific:
+                    startActivity(new Intent(AccountActivity.this, AccountActivity.class));
+                    return true;
+                default:
+                    return false;
+            }
+        });
+    }
 }

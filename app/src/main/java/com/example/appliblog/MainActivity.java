@@ -13,12 +13,16 @@ import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activité principale qui affiche une liste d'articles et gère les notifications via Firebase Messaging.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView articlesRecyclerView;
@@ -31,90 +35,89 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialisation du RecyclerView et de son adapter
         articlesRecyclerView = findViewById(R.id.articlesRecyclerView);
         articlesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Initialisez l'adapter avec une liste vide dès le départ
         articleAdapter = new ArticleAdapter(this, articlesList);
         articlesRecyclerView.setAdapter(articleAdapter);
 
-        // Chargez les articles de la base de données
+        // Chargement des articles depuis la base de données
         loadArticlesFromDatabase();
 
-        // Initialisation et configuration de Firebase Messaging pour les notifications
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
+        // Configuration de Firebase Messaging
+        setupFirebaseMessaging();
 
-                        // Récupérer le token d'inscription FCM et le loguer
-                        String token = task.getResult();
-                        Log.d(TAG, "FCM Registration Token: " + token);
-                        Toast.makeText(MainActivity.this, "FCM Token: " + token, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Configuration de la navigation inférieure
+        setupBottomNavigationView();
 
-        // Configuration de la BottomNavigationView
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    // Intent pour revenir à l'accueil, si nécessaire
-                    return true;
-                case R.id.navigation_specific:
-                    // Intent pour aller à l'activité du compte utilisateur
-                    Intent accountIntent = new Intent(MainActivity.this, AccountActivity.class);
-                    startActivity(accountIntent);
-                    return true;
-            }
-            return false;
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fab_add_article);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Création de l'intent pour démarrer AddArticleActivity
-                Intent intent = new Intent(MainActivity.this, AddArticleActivity.class);
-                startActivity(intent);
-            }
-        });
+        // Configuration du FloatingActionButton pour ajouter des articles
+        setupFloatingActionButton();
     }
 
+    /**
+     * Charge les articles depuis la base de données et met à jour le RecyclerView.
+     */
     private void loadArticlesFromDatabase() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         Cursor cursor = dbHelper.getAllArticles();
-        List<Article> newArticlesList = new ArrayList<>();
 
-        if (cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_ARTICLE_ID));
-                String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE));
-                String imageUrl = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URL));
-                String content = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTENT));
+        articlesList.clear(); // Efface la liste actuelle pour les nouveaux articles
 
-                Article article = new Article(id, title, imageUrl, content);
-                newArticlesList.add(article);
-            } while (cursor.moveToNext());
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_ARTICLE_ID));
+            String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE));
+            String imageUrl = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URL));
+            String content = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTENT));
+            articlesList.add(new Article(id, title, imageUrl, content));
         }
         cursor.close();
-
-        // Mettez à jour la liste dans l'adapter avec les nouveaux articles
-        articlesList.clear();
-        articlesList.addAll(newArticlesList);
-
-        // Notifiez l'adapter que les données ont changé pour rafraîchir l'affichage
-        articleAdapter.notifyDataSetChanged();
+        articleAdapter.notifyDataSetChanged(); // Notifie l'adapter du changement de données
     }
 
+    /**
+     * Initialise et configure Firebase Messaging.
+     */
+    private void setupFirebaseMessaging() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+                    // Récupère le token d'inscription FCM et le logue
+                    String token = task.getResult();
+                    Log.d(TAG, "FCM Registration Token: " + token);
+                });
+    }
+
+    /**
+     * Configure la BottomNavigationView avec des écouteurs pour la navigation.
+     */
+    private void setupBottomNavigationView() {
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_specific) {
+                startActivity(new Intent(MainActivity.this, AccountActivity.class));
+            }
+            // Ajoutez d'autres cases pour d'autres éléments si nécessaire
+            return true;
+        });
+    }
+
+    /**
+     * Configure le FloatingActionButton pour démarrer AddArticleActivity.
+     */
+    private void setupFloatingActionButton() {
+        FloatingActionButton fab = findViewById(R.id.fab_add_article);
+        fab.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, AddArticleActivity.class));
+        });
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Cela garantit que la liste des articles est rechargée chaque fois que MainActivity revient au premier plan.
+        // Recharge la liste des articles à chaque retour sur l'activité
         loadArticlesFromDatabase();
-    }}
+    }
+}
